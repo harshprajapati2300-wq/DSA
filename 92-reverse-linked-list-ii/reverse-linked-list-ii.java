@@ -11,38 +11,39 @@
 class Solution {
     public ListNode reverseBetween(ListNode head, int left, int right) {
 
-        if (head == null)
-            return null;
-
-        ArrayList<Integer> arr = new ArrayList<>();
-
-    
-        ListNode temp = head;
-        while (temp != null) {
-            arr.add(temp.val);
-            temp = temp.next;
+        // No need to reverse if list is empty or has only one node in the range
+        if (head == null || left == right) {
+            return head;
         }
 
-        int i = left - 1;
-        int j = right - 1;
+        // Create a dummy node to handle edge cases (e.g., reversing from head)
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
 
-        while (i < j) {
-            int t = arr.get(i);
-            arr.set(i, arr.get(j));
-            arr.set(j, t);
-            i++;
-            j--;
+        // Move 'prev' to the node just before the 'left' position
+        ListNode prev = dummy;
+        for (int i = 1; i < left; i++) {
+            prev = prev.next;
         }
 
-        
-        temp = head;
-        int k = 0;
+        // 'curr' points to the first node of the sublist to be reversed
+        ListNode curr = prev.next;
 
-        while (temp != null) {
-            temp.val = arr.get(k++);
-            temp = temp.next;
+        // Reverse the sublist using head insertion technique
+        for (int i = 0; i < right - left; i++) {
+
+            // Store the next node
+            ListNode next = curr.next;
+
+            // Remove 'next' from its current position
+            curr.next = next.next;
+
+            // Insert 'next' at the beginning of the reversed part
+            next.next = prev.next;
+            prev.next = next;
         }
 
-        return head;
+        // Return the new head of the list
+        return dummy.next;
     }
 }
